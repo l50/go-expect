@@ -301,10 +301,7 @@ func TestExpectOptThen(t *testing.T) {
 			if test.match {
 				require.NotNil(t, matcher)
 
-				cb, ok := matcher.(CallbackMatcher)
-				if ok {
-					require.True(t, ok)
-
+				if cb, ok := matcher.(CallbackMatcher); ok {
 					err = cb.Callback(nil)
 					require.Equal(t, test.expected, err)
 				}

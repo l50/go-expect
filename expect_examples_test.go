@@ -23,7 +23,8 @@ import (
 func ExampleConsole_echo() {
 	c, err := NewConsole(WithStdout(os.Stdout))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	defer c.Close()
 
@@ -34,26 +35,31 @@ func ExampleConsole_echo() {
 
 	err = cmd.Start()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	_, err = c.Send("Hello world")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	_, err = c.ExpectString("Hello world")
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	c.Tty().Close()
 	_, err = c.ExpectEOF()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	err = cmd.Wait()
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 
 	// Output: Hello world
