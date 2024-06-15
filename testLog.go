@@ -72,6 +72,8 @@ func (tw testWriter) Write(p []byte) (n int, err error) {
 
 // StripTrailingEmptyLines returns a copy of s stripped of trailing lines that
 // consist of only space characters.
+// StripTrailingEmptyLines returns a copy of s stripped of trailing lines that
+// consist of only space characters.
 func StripTrailingEmptyLines(out string) string {
 	lines := strings.Split(out, "\n")
 	if len(lines) < 2 {
@@ -79,7 +81,7 @@ func StripTrailingEmptyLines(out string) string {
 	}
 
 	for i := len(lines) - 1; i >= 0; i-- {
-		stripped := strings.Replace(lines[i], " ", "", -1)
+		stripped := strings.ReplaceAll(lines[i], " ", "")
 		if len(stripped) == 0 {
 			lines = lines[:len(lines)-1]
 		} else {

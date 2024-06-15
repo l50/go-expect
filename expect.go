@@ -23,6 +23,16 @@ import (
 	"unicode/utf8"
 )
 
+// handleMatchers handles matching logic and callbacks.
+func (c *Console) handleMatchers(buf *bytes.Buffer, matcher Matcher) (Matcher, error) {
+	if cb, ok := matcher.(CallbackMatcher); ok {
+		if err := cb.Callback(buf); err != nil {
+			return nil, err
+		}
+	}
+	return matcher, nil
+}
+
 // Expectf reads from the Console's tty until the provided formatted string
 // is read or an error occurs, and returns the buffer read by Console.
 func (c *Console) Expectf(format string, args ...interface{}) (string, error) {
@@ -56,7 +66,8 @@ func (c *Console) Expect(opts ...ExpectOpt) (string, error) {
 	}
 
 	buf := new(bytes.Buffer)
-	writer := io.MultiWriter(append(c.opts.Stdouts, buf)...)
+	writer := io.MultiWriter(append([]io.Writer{}, c.opts.Stdouts...)...)
+	writer = io.MultiWriter(append([]io.Writer{writer}, buf)...)
 	runeWriter := bufio.NewWriterSize(writer, utf8.UTFMax)
 
 	readTimeout := c.opts.ReadTimeout
@@ -114,15 +125,6 @@ func (c *Console) Expect(opts ...ExpectOpt) (string, error) {
 		}
 	}
 
-	if matcher != nil {
-		cb, ok := matcher.(CallbackMatcher)
-		if ok {
-			err = cb.Callback(buf)
-			if err != nil {
-				return buf.String(), err
-			}
-		}
-	}
-
+	matcher, err = c.handleMatchers(buf, matcher)
 	return buf.String(), err
 }
