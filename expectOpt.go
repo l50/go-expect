@@ -214,11 +214,11 @@ func (am *allMatcher) Match(v interface{}) bool {
 }
 
 func (am *allMatcher) Criteria() interface{} {
-	var criterias []interface{}
+	var criteria []interface{}
 	for _, matcher := range am.options.Matchers {
-		criterias = append(criterias, matcher.Criteria())
+		criteria = append(criteria, matcher.Criteria())
 	}
-	return criterias
+	return criteria
 }
 
 // All adds an Expect condition to exit if the content read from Console's tty

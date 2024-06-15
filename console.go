@@ -18,7 +18,6 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"time"
@@ -57,7 +56,9 @@ type ConsoleOpts struct {
 // ExpectObserver provides an interface for a function callback that will
 // be called after each Expect operation.
 // matchers will be the list of active matchers when an error occurred,
-//   or a list of matchers that matched `buf` when err is nil.
+//
+//	or a list of matchers that matched `buf` when err is nil.
+//
 // buf is the captured output that was matched against.
 // err is error that might have occurred. May be nil.
 type ExpectObserver func(matchers []Matcher, buf string, err error)
@@ -66,7 +67,7 @@ type ExpectObserver func(matchers []Matcher, buf string, err error)
 // be called after each Send operation.
 // msg is the string that was sent.
 // num is the number of bytes actually sent.
-// err is the error that might have occured.  May be nil.
+// err is the error that might have occurred. May be nil.
 type SendObserver func(msg string, num int, err error)
 
 // WithStdout adds writers that Console duplicates writes to, similar to the
@@ -136,7 +137,7 @@ func WithDefaultTimeout(timeout time.Duration) ConsoleOpt {
 // NewConsole returns a new Console with the given options.
 func NewConsole(opts ...ConsoleOpt) (*Console, error) {
 	options := ConsoleOpts{
-		Logger: log.New(ioutil.Discard, "", 0),
+		Logger: log.New(io.Discard, "", 0),
 	}
 
 	for _, opt := range opts {

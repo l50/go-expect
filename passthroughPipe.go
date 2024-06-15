@@ -52,7 +52,6 @@ func NewPassthroughPipe(reader io.Reader) (*PassthroughPipe, error) {
 			// If we are unable to close the pipe, and the pipe isn't already closed,
 			// the caller will hang indefinitely.
 			panic(err)
-			return
 		}
 
 		// When an error is read from reader, we need it to passthrough the err to
