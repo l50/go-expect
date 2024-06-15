@@ -1,7 +1,7 @@
 # go-expect
 
-![Go](https://github.com/Netflix/go-expect/workflows/Go/badge.svg)
-[![GoDoc](https://godoc.org/github.com/Netflix/go-expect?status.svg)](https://godoc.org/github.com/Netflix/go-expect)
+[![Tests](https://github.com/l50/go-expect/actions/workflows/tests.yaml/badge.svg)](https://github.com/l50/go-expect/actions/workflows/tests.yaml)
+[![Pre-Commit](https://github.com/l50/go-expect/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/l50/go-expect/actions/workflows/pre-commit.yaml)
 
 Package expect provides an expect-like interface to automate control of
 applications. It is unlike expect in that it does not spawn or manage process
