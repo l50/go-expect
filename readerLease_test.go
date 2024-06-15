@@ -39,7 +39,8 @@ func TestReaderLease(t *testing.T) {
 			wg.Add(1)
 			go func() {
 				defer wg.Done()
-				io.Copy(tout, rm.NewReader(ctx))
+				_, err := io.Copy(tout, rm.NewReader(ctx))
+				require.Nil(t, err)
 			}()
 
 			wg.Add(1)
