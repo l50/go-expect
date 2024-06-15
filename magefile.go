@@ -9,9 +9,12 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/Netflix/go-expect"
 	"github.com/fatih/color"
 	"github.com/l50/goutils/v2/dev/lint"
 	mageutils "github.com/l50/goutils/v2/dev/mage"
@@ -241,6 +244,9 @@ func RunTests() error {
 		return fmt.Errorf("failed to run unit tests: %v", err)
 	}
 
+	if err := TestConsoleInteraction(); err != nil {
+		return fmt.Errorf("failed to test console interaction: %v", err)
+	}
 	return nil
 }
 
@@ -288,4 +294,40 @@ func handleLineInCodeBlock(trimmedLine, line string, inCodeBlock bool, language 
 		inCodeBlock = false
 	}
 	return inCodeBlock, codeBlockLines
+}
+
+func TestConsoleInteraction() error {
+	c, err := expect.NewConsole(expect.WithStdout(os.Stdout))
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+
+	cmd := exec.Command("vi")
+	cmd.Stdin = c.Tty()
+	cmd.Stdout = c.Tty()
+	cmd.Stderr = c.Tty()
+
+	go func() {
+		c.ExpectEOF()
+	}()
+
+	err = cmd.Start()
+	if err != nil {
+		return err
+	}
+
+	time.Sleep(time.Second)
+	c.Send("iHello world\x1b")
+	time.Sleep(time.Second)
+	c.Send("dd")
+	time.Sleep(time.Second)
+	c.SendLine(":q!")
+
+	err = cmd.Wait()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
